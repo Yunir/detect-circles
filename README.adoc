@@ -1,0 +1,8 @@
+= Detect circles
+
+The program should count the number of red and black circles on a green background.
+
+In the picture, in addition to circles, there may be rectangles with sides parallel to the borders of the picture.
+
+TIP: We can assume that all figures are separated from each other and from the border
+
