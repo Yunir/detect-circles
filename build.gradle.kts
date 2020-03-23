@@ -1,9 +1,14 @@
 plugins {
+    application
     kotlin("jvm") version "1.3.70"
 }
 
 group = "com.github.yunir"
 version = "0.1-SNAPSHOT"
+
+application {
+    mainClassName = "MainKt"
+}
 
 repositories {
     mavenCentral()
