@@ -6,3 +6,16 @@ In the picture, in addition to circles, there may be rectangles with sides paral
 
 TIP: We can assume that all figures are separated from each other and from the border
 
+== How-to
+To run the program on unix-like systems just type:
+
+[source,shell]
+----
+./gradlew -q run
+----
+For windows:
+
+[source,shell]
+----
+.\gradlew.bat -q run
+----

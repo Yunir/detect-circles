@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    implementation("ar.com.hjg:pngj:2.1.0")
 }
 
 tasks {
