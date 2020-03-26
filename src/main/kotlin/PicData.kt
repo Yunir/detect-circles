@@ -7,19 +7,14 @@ class PicData(f: File) {
     private val cols: Int
     private val rows: Int
     private val data: Array<CharArray>
-    private fun readImageToMatrix(pngr: PngReader) {
-        for (i in 0 until rows) {
-            val ili = pngr.readRow(i) as ImageLineInt
-            val ii = ili.scanline
-            var j = 0
-            while (j < ii.size) {
-                if (ii[j] == 0 && ii[j + 1] == 255 && ii[j + 2] == 0) data[i][j / 4] =
-                    'G' else if (ii[j] == 0 && ii[j + 1] == 0 && ii[j + 2] == 0) data[i][j / 4] =
-                    'B' else if (ii[j] == 255 && ii[j + 1] == 0 && ii[j + 2] == 0) data[i][j / 4] =
-                    'R' else data[i][j / 4] = 'G'
-                j += 4
-            }
-        }
+
+    init {
+        val pngr = PngReader(f)
+        rows = pngr.imgInfo.rows
+        cols = pngr.imgInfo.cols
+        data = Array(rows) { CharArray(cols) }
+        readImageToMatrix(pngr)
+        pngr.end()
     }
 
     fun printData() {
@@ -72,12 +67,23 @@ class PicData(f: File) {
         println("Black cirles: $blackCircles\nRed circles: $redCircles")
     }
 
-    init {
-        val pngr = PngReader(f)
-        rows = pngr.imgInfo.rows
-        cols = pngr.imgInfo.cols
-        data = Array(rows) { CharArray(cols) }
-        readImageToMatrix(pngr)
-        pngr.end()
+    private fun readImageToMatrix(pngr: PngReader) {
+
+        fun colorListOf(l: List<Int>) = when (l) {
+            listOf(0, 255, 0) -> 'G'
+            listOf(0, 0, 0) -> 'B'
+            listOf(255, 0, 0) -> 'R'
+            else -> 'G'
+        }
+
+        for (i in 0 until rows) {
+            val line = (pngr.readRow(i) as ImageLineInt).scanline
+            var j = 0
+            while (j < line.size) {
+                data[i][j / 4] = colorListOf(listOf(line[j], line[j+1], line[j+2]))
+                j += 4
+            }
+        }
+
     }
 }
