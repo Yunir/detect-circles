@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.yunir"
-version = "0.1"
+version = "0.2"
 
 application {
     mainClassName = "MainKt"
