@@ -3,6 +3,9 @@ import ar.com.hjg.pngj.PngReader
 import java.io.File
 import java.util.*
 
+/**
+ * Class for image processing and counting circles in it
+ */
 class PicData(f: File) {
     private val cols: Int
     private val rows: Int
@@ -17,6 +20,9 @@ class PicData(f: File) {
         pngr.end()
     }
 
+    /**
+     * Prettify output of 2-dimensional array (2D-image)
+     */
     fun printData() {
         for (i in 0 until rows) {
             for (j in 0 until cols) {
@@ -26,34 +32,41 @@ class PicData(f: File) {
         }
     }
 
+    /**
+     * Count circles inside 2-dimensional array (2D-image)
+     */
     fun countFigures() {
         var searchFigure = true
         var blackCircles = 0
         var redCircles = 0
         var pastLine = TreeSet<Int>()
         var newLine: TreeSet<Int>
+
+        fun checkBounds(x: Int, y: Int) = x in 0 until rows && y in 0 until cols
+        fun isGreen(x: Int, y: Int) = checkBounds(x, y) && data[x][y] == 'G'
+        fun isRed(x: Int, y: Int) = checkBounds(x, y) && data[x][y] == 'R'
+        fun isNewFigureDetected(x: Int, y: Int) = !isGreen(x, y) && isGreen(x-1, y)
+        fun isCircleFound(x: Int, y: Int) = !isGreen(x+1, y-1)
+
         for (i in 1 until rows - 1) {
             newLine = TreeSet()
             for (j in 1 until cols - 1) {
                 if (searchFigure) {
-                    if (data[i][j] != 'G' && data[i - 1][j] == 'G') {
+                    if (isNewFigureDetected(i, j)) {
                         searchFigure = false
-                        if (data[i + 1][j - 1] != 'G') {
-                            var newFigure = false
-                            var currJ = j
-                            var nearestJ: Int?
-                            nearestJ = pastLine.ceiling(j)
+                        if (isCircleFound(i, j)) {
+                            var isNewFigure = false
+                            val nearestJ: Int? = pastLine.ceiling(j)
                             if (nearestJ != null) {
-                                while (currJ != nearestJ) {
-                                    ++currJ
-                                    if (data[i][currJ] == 'G') newFigure = true
+                                for (k in j until nearestJ) {
+                                    if (isGreen(i, k)) isNewFigure = true
                                     break
                                 }
                             } else {
-                                newFigure = true
+                                isNewFigure = true
                             }
-                            if (newFigure) {
-                                if (data[i][j] == 'R') ++redCircles else ++blackCircles
+                            if (isNewFigure) {
+                                if (isRed(i,j)) ++redCircles else ++blackCircles
                             }
                             newLine.add(j)
                         }
@@ -67,6 +80,9 @@ class PicData(f: File) {
         println("Black cirles: $blackCircles\nRed circles: $redCircles")
     }
 
+    /**
+     * Transform image to integer 2-dimensional array
+     */
     private fun readImageToMatrix(pngr: PngReader) {
 
         fun colorListOf(l: List<Int>) = when (l) {
