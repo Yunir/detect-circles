@@ -53,7 +53,6 @@ class PicData(f: File) {
             for (j in 1 until cols - 1) {
                 if (searchFigure) {
                     if (isNewFigureDetected(i, j)) {
-                        searchFigure = false
                         if (isCircleFound(i, j)) {
                             var isNewFigure = false
                             val nearestJ: Int? = pastLine.ceiling(j)
@@ -62,6 +61,8 @@ class PicData(f: File) {
                                     if (isGreen(i, k)) isNewFigure = true
                                     break
                                 }
+                            } else if (!isGreen(i-1, j+1)) {
+                                isNewFigure = false
                             } else {
                                 isNewFigure = true
                             }
@@ -71,6 +72,7 @@ class PicData(f: File) {
                             newLine.add(j)
                         }
                     }
+                    if (! isGreen(i, j)) searchFigure = false
                 } else {
                     if (data[i][j] == 'G') searchFigure = true
                 }
@@ -94,10 +96,11 @@ class PicData(f: File) {
 
         for (i in 0 until rows) {
             val line = (pngr.readRow(i) as ImageLineInt).scanline
+            val m = if (line.size % 4 == 0) 4 else 3
             var j = 0
             while (j < line.size) {
-                data[i][j / 4] = colorListOf(listOf(line[j], line[j+1], line[j+2]))
-                j += 4
+                data[i][j / m] = colorListOf(listOf(line[j], line[j+1], line[j+2]))
+                j += m
             }
         }
 
