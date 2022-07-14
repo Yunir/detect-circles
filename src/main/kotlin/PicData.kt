@@ -58,8 +58,10 @@ class PicData(f: File) {
                             val nearestJ: Int? = pastLine.ceiling(j)
                             if (nearestJ != null) {
                                 for (k in j until nearestJ) {
-                                    if (isGreen(i, k)) isNewFigure = true
-                                    break
+                                    if (isGreen(i, k)) {
+                                        isNewFigure = true
+                                        break
+                                    }
                                 }
                             } else if (!isGreen(i-1, j+1)) {
                                 isNewFigure = false
@@ -74,7 +76,7 @@ class PicData(f: File) {
                     }
                     if (! isGreen(i, j)) searchFigure = false
                 } else {
-                    if (data[i][j] == 'G') searchFigure = true
+                    if (isGreen(i, j)) searchFigure = true
                 }
             }
             pastLine = newLine
